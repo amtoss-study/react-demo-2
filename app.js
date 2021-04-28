@@ -1,33 +1,16 @@
-// class App extends React.Component {
-//     render() {
-//         return <p>Hello, {this.props.name}!</p>;
-//     }
-// }
-
-// function App(props) {
-//     return <p>Hello, {props.name}!</p>;
-// }
-
-// const App = props => {
-//     return <p>Hello, {props.name}!</p>;
-// }
-
-// const App = props => <p>Hello, {props.name}!</p>;
-
-// const App = ({ name }) => <p>Hello, {name}!</p>;
-
-const getQueryParam = param => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-}
-
 const Greeting = ({ name }) => (
     <p>Hello, {name}!</p>
 );
 
-const NameForm = () => {
+const NameForm = ({ onSubmit }) => {
     return (
-        <form autoComplete="off">
+        <form
+            autoComplete="off"
+            onSubmit={event => {
+                event.preventDefault();
+                onSubmit({ name: event.target[0].value })
+            }}
+        >
             <h3>What is your name?</h3>
             <input name="name" />
             <button type="submit">Submit</button>
@@ -35,11 +18,30 @@ const NameForm = () => {
     );
 }
 
+// class App extends React.Component {
+//     constructor(props) {
+//         super(props);
+//         this.state = {
+//             name: null,
+//         };
+//     }
+//
+//     render() {
+//         return (
+//             <div>
+//                 <NameForm onSubmit={values => this.setState(values)} />
+//                 <Greeting name={this.state.name || 'Incognito'} />
+//             </div>
+//         );
+//     }
+// }
+
 const App = () => {
+    const [name, setName] = React.useState(null);
     return (
         <div>
-            <NameForm />
-            <Greeting name={getQueryParam('name') || 'Incognito'} />
+            <NameForm onSubmit={values => setName(values.name)} />
+            <Greeting name={name || 'Incognito'} />
         </div>
     );
 }
