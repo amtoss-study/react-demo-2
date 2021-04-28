@@ -3,38 +3,28 @@ const Greeting = ({ name }) => (
 );
 
 const NameForm = ({ onSubmit }) => {
+    const [nameValue, setNameValue] = React.useState('');
     return (
         <form
             autoComplete="off"
             onSubmit={event => {
                 event.preventDefault();
-                onSubmit({ name: event.target[0].value })
+                onSubmit({ name: nameValue })
             }}
         >
             <h3>What is your name?</h3>
-            <input name="name" />
+            <p>Current value: {nameValue}</p>
+            <input
+                name="name"
+                value={nameValue}
+                onChange={event => {
+                    setNameValue(event.target.value)
+                }}
+            />
             <button type="submit">Submit</button>
         </form>
     );
 }
-
-// class App extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             name: null,
-//         };
-//     }
-//
-//     render() {
-//         return (
-//             <div>
-//                 <NameForm onSubmit={values => this.setState(values)} />
-//                 <Greeting name={this.state.name || 'Incognito'} />
-//             </div>
-//         );
-//     }
-// }
 
 const App = () => {
     const [name, setName] = React.useState(null);
