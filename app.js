@@ -1,6 +1,33 @@
-const Greeting = ({ name }) => (
-    <p>Hello, {name}!</p>
+const Visit = ({ id, timestamp, name, removeVisit }) => (
+    <li>
+        <span style={{ marginRight: '20px' }}>
+            {new Date(timestamp).toLocaleString()} | {name}
+        </span>
+        <button
+            type="button"
+            onClick={() => removeVisit(id)}
+        >
+            Remove
+        </button>
+    </li>
 );
+
+const Visits = ({ visits, removeVisit }) => {
+    return (
+        <div>
+            <h3>History of visits</h3>
+            <ul>
+                {visits.map(visit => (
+                    <Visit
+                        key={visit.id}
+                        removeVisit={removeVisit}
+                        {...visit}
+                    />
+                ))}
+            </ul>
+        </div>
+    )
+}
 
 const NameForm = ({ onSubmit }) => {
     const [nameValue, setNameValue] = React.useState('');
@@ -9,11 +36,11 @@ const NameForm = ({ onSubmit }) => {
             autoComplete="off"
             onSubmit={event => {
                 event.preventDefault();
-                onSubmit({ name: nameValue })
+                onSubmit({ name: nameValue });
+                setNameValue('');
             }}
         >
             <h3>What is your name?</h3>
-            <p>Current value: {nameValue}</p>
             <input
                 name="name"
                 value={nameValue}
@@ -27,11 +54,28 @@ const NameForm = ({ onSubmit }) => {
 }
 
 const App = () => {
-    const [name, setName] = React.useState(null);
+    const [visits, setVisits] = React.useState([]);
+    const getVisit = name => {
+        const timestamp = Date.now();
+        return ({
+            id: timestamp,
+            name,
+            timestamp,
+        });
+    }
     return (
         <div>
-            <NameForm onSubmit={values => setName(values.name)} />
-            <Greeting name={name || 'Incognito'} />
+            <NameForm
+                onSubmit={({ name }) => {
+                    setVisits([...visits, getVisit(name)]);
+                }}
+            />
+            <Visits
+                visits={visits}
+                removeVisit={id => {
+                    setVisits(visits.filter(visit => visit.id !== id))
+                }}
+            />
         </div>
     );
 }
