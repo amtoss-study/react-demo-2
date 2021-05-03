@@ -1,4 +1,14 @@
-const Visit = ({ id, timestamp, name, removeVisit }) => (
+import React from 'react';
+
+type Visit = {
+    id: number;
+    timestamp: number;
+    name: string;
+}
+
+const VisitsListItem = ({ id, timestamp, name, removeVisit }: Visit & {
+    removeVisit: (id: number) => void,
+}) => (
     <li>
         <span style={{ marginRight: '20px' }}>
             {new Date(timestamp).toLocaleString()} | {name}
@@ -12,13 +22,13 @@ const Visit = ({ id, timestamp, name, removeVisit }) => (
     </li>
 );
 
-const Visits = ({ visits, removeVisit }) => {
+const VisitsList = ({ visits, removeVisit }: { visits: Visit[], removeVisit: (id: number) => void }) => {
     return (
         <div>
             <h3>History of visits</h3>
             <ul>
                 {visits.map(visit => (
-                    <Visit
+                    <VisitsListItem
                         key={visit.id}
                         removeVisit={removeVisit}
                         {...visit}
@@ -29,7 +39,11 @@ const Visits = ({ visits, removeVisit }) => {
     )
 }
 
-const NameForm = ({ onSubmit }) => {
+type NameFormValues = {
+    name: string;
+};
+
+const NameForm = ({ onSubmit }: { onSubmit: (values: NameFormValues) => void }) => {
     const [nameValue, setNameValue] = React.useState('');
     return (
         <form
@@ -54,8 +68,8 @@ const NameForm = ({ onSubmit }) => {
 }
 
 const App = () => {
-    const [visits, setVisits] = React.useState([]);
-    const getVisit = name => {
+    const [visits, setVisits] = React.useState<Visit[]>([]);
+    const getVisit = (name: string): Visit => {
         const timestamp = Date.now();
         return ({
             id: timestamp,
@@ -70,7 +84,7 @@ const App = () => {
                     setVisits([...visits, getVisit(name)]);
                 }}
             />
-            <Visits
+            <VisitsList
                 visits={visits}
                 removeVisit={id => {
                     setVisits(visits.filter(visit => visit.id !== id))
@@ -80,4 +94,4 @@ const App = () => {
     );
 }
 
-ReactDOM.render(<App />, document.getElementById('react-root'));
+export default App;
