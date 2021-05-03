@@ -1,33 +1,30 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
-import NameForm from './components/NameForm';
-import VisitsList from './components/VisitsList';
+import NavBar from './components/NavBar';
+import Home from './pages/Home';
+import Visits from './pages/Visits';
 import { Visit } from './types';
 
 const App = () => {
     const [visits, setVisits] = React.useState<Visit[]>([]);
-    const getVisit = (name: string): Visit => {
-        const timestamp = Date.now();
-        return ({
-            id: timestamp,
-            name,
-            timestamp,
-        });
-    }
+    const lastVisit = visits[visits.length - 1];
     return (
-        <div>
-            <NameForm
-                onSubmit={({ name }) => {
-                    setVisits([...visits, getVisit(name)]);
-                }}
-            />
-            <VisitsList
-                visits={visits}
-                removeVisit={id => {
-                    setVisits(visits.filter(visit => visit.id !== id))
-                }}
-            />
-        </div>
+        <Router>
+            <NavBar />
+            <Switch>
+                <Route path="/visits">
+                    <Visits visits={visits} setVisits={setVisits} />
+                </Route>
+                <Route path="/">
+                    <Home name={lastVisit && lastVisit.name} />
+                </Route>
+            </Switch>
+        </Router>
     );
 }
 

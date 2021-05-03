@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Visit } from '../types';
+import { Visit } from '../../types';
 
 const VisitsListItem = ({ id, timestamp, name, removeVisit }: Visit & {
     removeVisit: (id: number) => void,
