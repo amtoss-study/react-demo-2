@@ -4,25 +4,29 @@ type NameFormValues = {
     name: string;
 };
 
-const NameForm = ({ onSubmit }: {
-    onSubmit: (values: NameFormValues) => void
+const NameForm = ({
+    onSubmit,
+    initialValues = { name: '' },
+}: {
+    onSubmit: (values: NameFormValues) => void,
+    initialValues?: NameFormValues,
 }) => {
-    const [nameValue, setNameValue] = React.useState('');
+    const [values, setValues] = React.useState(initialValues);
     return (
         <form
             autoComplete="off"
             onSubmit={event => {
                 event.preventDefault();
-                onSubmit({ name: nameValue });
-                setNameValue('');
+                onSubmit(values);
+                setValues({ name: '' });
             }}
         >
             <h3>What is your name?</h3>
             <input
                 name="name"
-                value={nameValue}
+                value={values.name}
                 onChange={event => {
-                    setNameValue(event.target.value)
+                    setValues({ name: event.target.value })
                 }}
             />
             <button type="submit">Submit</button>

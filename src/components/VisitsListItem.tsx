@@ -1,15 +1,15 @@
 import React from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import { Visit } from '../../types';
+import { Visit } from '../types';
 
-const VisitsListItem = ({ id, timestamp, name, removeVisit }: Visit & {
+const VisitsListItem = ({ id, timestamp, name, removeVisit, getVisitUrl }: Visit & {
     removeVisit: (id: number) => void,
+    getVisitUrl: (id: number) => string,
 }) => {
-    const match = useRouteMatch();
     return (
         <li>
-            <Link to={`${match.url}/${id}`} style={{ marginRight: '20px' }}>
+            <Link to={getVisitUrl(id)} style={{ marginRight: '20px' }}>
                 {new Date(timestamp).toLocaleString()} | {name}
             </Link>
             <button

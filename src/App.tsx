@@ -5,10 +5,10 @@ import {
   Route,
 } from "react-router-dom";
 
-import NavBar from './components/NavBar';
-import Home from './pages/Home';
-import Visits from './pages/Visits';
-import { Visit } from './types';
+import NavBar from 'components/NavBar';
+import Home from 'pages/Home';
+import Visits from 'pages/Visits';
+import { Visit } from 'types';
 
 const App = () => {
     const [visits, setVisits] = React.useState<Visit[]>([]);
