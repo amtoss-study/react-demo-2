@@ -4,22 +4,18 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NavBar from "components/NavBar";
 import Home from "pages/Home";
 import Visits from "pages/Visits";
-import { Visit } from "types";
+import { VisitsContextProvider } from "VisitsContext";
 
 const App = () => {
-  const [visits, setVisits] = React.useState<Visit[]>([]);
-  const lastVisit = visits[visits.length - 1];
   return (
     <Router>
-      <NavBar />
-      <Switch>
-        <Route path="/visits">
-          <Visits visits={visits} setVisits={setVisits} />
-        </Route>
-        <Route path="/">
-          <Home name={lastVisit && lastVisit.name} />
-        </Route>
-      </Switch>
+      <VisitsContextProvider>
+        <NavBar />
+        <Switch>
+          <Route path="/visits" component={Visits} />
+          <Route path="/" component={Home} />
+        </Switch>
+      </VisitsContextProvider>
     </Router>
   );
 };

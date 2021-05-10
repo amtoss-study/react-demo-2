@@ -3,36 +3,31 @@ import { useRouteMatch } from "react-router-dom";
 
 import { Visit } from "types";
 import VisitsList from "components/VisitsList";
-import NameForm from "components/NameForm";
+import NameForm, { Values as NameFormValues } from "components/NameForm";
+import useVisits from "hooks/useVisits";
 
-const List = ({
-  visits,
-  setVisits,
-}: {
-  visits: Visit[];
-  setVisits: (visits: Visit[]) => void;
-}) => {
-  const match = useRouteMatch();
-  const getVisit = (name: string): Visit => {
-    const timestamp = Date.now();
-    return {
-      id: timestamp,
-      name,
-      timestamp,
-    };
+const createVisitFromValues = (values: NameFormValues): Visit => {
+  const timestamp = Date.now();
+  return {
+    id: timestamp,
+    timestamp,
+    ...values,
   };
+};
+
+const List = () => {
+  const { visits, createVisit, deleteVisit } = useVisits();
+  const match = useRouteMatch();
   return (
     <div>
       <NameForm
-        onSubmit={({ name }) => {
-          setVisits([...visits, getVisit(name)]);
+        onSubmit={(values) => {
+          createVisit(createVisitFromValues(values));
         }}
       />
       <VisitsList
         visits={visits}
-        removeVisit={(id) => {
-          setVisits(visits.filter((visit) => visit.id !== id));
-        }}
+        removeVisit={deleteVisit}
         getVisitUrl={(id) => `${match.url}/${id}`}
       />
     </div>

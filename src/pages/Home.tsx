@@ -1,7 +1,11 @@
 import React from "react";
 
-const Home = ({ name }: { name?: string }) => (
-  <h3>Hello, {name || "Incognito"}</h3>
-);
+import useVisits from "hooks/useVisits";
+
+const Home = () => {
+  const { visits } = useVisits();
+  const lastVisit = visits[visits.length - 1];
+  return <h3>Hello, {lastVisit ? lastVisit.name : "Incognito"}</h3>;
+};
 
 export default Home;

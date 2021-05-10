@@ -1,6 +1,6 @@
 import React from "react";
 
-type NameFormValues = {
+export type Values = {
   name: string;
 };
 
@@ -8,8 +8,8 @@ const NameForm = ({
   onSubmit,
   initialValues = { name: "" },
 }: {
-  onSubmit: (values: NameFormValues) => void;
-  initialValues?: NameFormValues;
+  onSubmit: (values: Values) => void;
+  initialValues?: Values;
 }) => {
   const [values, setValues] = React.useState(initialValues);
   return (
