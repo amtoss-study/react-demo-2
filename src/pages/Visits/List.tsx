@@ -6,18 +6,21 @@ import VisitsList from "components/VisitsList";
 import NameForm, { Values as NameFormValues } from "components/NameForm";
 import useVisits from "hooks/useVisits";
 
-const createVisitFromValues = (values: NameFormValues): Visit => {
-  const timestamp = Date.now();
+const createVisitFromValues = (values: NameFormValues): Omit<Visit, "id"> => {
   return {
-    id: timestamp,
-    timestamp,
+    timestamp: Date.now(),
     ...values,
   };
 };
 
 const List = () => {
-  const { visits, createVisit, deleteVisit } = useVisits();
+  const { visits, retrieveVisits, createVisit, deleteVisit } = useVisits();
   const match = useRouteMatch();
+
+  React.useEffect(() => {
+    retrieveVisits();
+  }, [retrieveVisits]);
+
   return (
     <div>
       <NameForm

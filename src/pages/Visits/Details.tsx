@@ -6,11 +6,17 @@ import NameForm from "components/NameForm";
 import useVisits from "hooks/useVisits";
 
 const Details = () => {
-  const { retrieveVisit, updateVisit } = useVisits();
+  const { getVisit, retrieveVisit, updateVisit } = useVisits();
   const { visitId } = useParams<{ visitId: string }>();
   const [editing, setEditing] = React.useState(false);
 
-  const visit = retrieveVisit(parseInt(visitId, 10));
+  const visitIdNum = parseInt(visitId, 10);
+
+  React.useEffect(() => {
+    retrieveVisit(visitIdNum);
+  }, [retrieveVisit, visitIdNum]);
+
+  const visit = getVisit(visitIdNum);
   if (visit === undefined) {
     return <h3>Visit does not exist</h3>;
   }
