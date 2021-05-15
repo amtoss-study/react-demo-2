@@ -8,17 +8,21 @@ const NameForm = ({
   onSubmit,
   initialValues = { name: "" },
 }: {
-  onSubmit: (values: Values) => void;
+  onSubmit: (values: Values) => Promise<void>;
   initialValues?: Values;
 }) => {
   const [values, setValues] = React.useState(initialValues);
+  const [submitting, setSubmitting] = React.useState(false);
   return (
     <form
       autoComplete="off"
       onSubmit={(event) => {
         event.preventDefault();
-        onSubmit(values);
-        setValues({ name: "" });
+        setSubmitting(true);
+        onSubmit(values).then(() => {
+          setSubmitting(false);
+          setValues({ name: "" });
+        });
       }}
     >
       <h3>What is your name?</h3>
@@ -29,7 +33,9 @@ const NameForm = ({
           setValues({ name: event.target.value });
         }}
       />
-      <button type="submit">Submit</button>
+      <button type="submit" disabled={submitting}>
+        Submit
+      </button>
     </form>
   );
 };
