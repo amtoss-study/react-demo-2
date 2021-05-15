@@ -14,37 +14,52 @@ const Details = () => {
   const [error, setError] = React.useState<null | string>(null);
 
   const visitIdNum = parseInt(visitId, 10);
+  const visit = getVisit(visitIdNum);
+  const visitExists = visit !== undefined;
+
+  const fetchVisit = React.useCallback(
+    async (id: number) => {
+      if (visitExists) {
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        await retrieveVisit(id);
+      } catch (err) {
+        setError(`Error while loading visit: ${err}`);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [retrieveVisit, visitExists]
+  );
 
   React.useEffect(() => {
-    setLoading(true);
-    setError(null);
-    retrieveVisit(visitIdNum)
-      .catch((err) => setError(`Error while loading visit: ${err}`))
-      .finally(() => setLoading(false));
-  }, [retrieveVisit, visitIdNum]);
-
-  const visit = getVisit(visitIdNum);
-  if (visit === undefined) {
-    return <h3>Visit does not exist</h3>;
-  }
+    fetchVisit(visitIdNum);
+  }, [fetchVisit, visitIdNum]);
 
   return (
     <>
-      {editing && (
+      {!loading && !visitExists && <h3>Visit does not exist</h3>}
+
+      {editing && visit !== undefined && (
         <NameForm
-          onSubmit={(values) => {
-            return updateVisit(visit.id, values)
-              .then(() => {
-                setEditing(false);
-              })
-              .catch((err) => setError(`Error while updating visit: ${err}`))
-              .finally(() => setEditing(false));
+          onSubmit={async (values) => {
+            try {
+              await updateVisit(visit.id, values);
+              setEditing(false);
+            } catch (err) {
+              setError(`Error while updating visit: ${err}`);
+            } finally {
+              setLoading(false);
+            }
           }}
           initialValues={{ name: visit.name }}
         />
       )}
 
-      {!editing && (
+      {!editing && visit !== undefined && (
         <div>
           <VisitDetails {...visit} />
           <button type="button" onClick={() => setEditing(true)}>

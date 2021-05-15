@@ -16,13 +16,12 @@ const NameForm = ({
   return (
     <form
       autoComplete="off"
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault();
         setSubmitting(true);
-        onSubmit(values).then(() => {
-          setSubmitting(false);
-          setValues({ name: "" });
-        });
+        await onSubmit(values);
+        setSubmitting(false);
+        setValues({ name: "" });
       }}
     >
       <h3>What is your name?</h3>

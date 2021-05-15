@@ -9,41 +9,39 @@ const useVisits = () => {
 
   const getVisit = (id: number) => visits.find((v) => v.id === id);
 
-  const retrieveVisits = useCallback(() => {
+  const retrieveVisits = useCallback(async () => {
     setVisits([]);
-    return api.get("visits").then((data: Visit[]) => {
-      setVisits(data);
-    });
+    const data = await api.get<Visit[]>("visits");
+    setVisits(data);
   }, [setVisits]);
 
-  const createVisit = (values: Omit<Visit, "id">) => {
-    return api.post("visits", values).then((data: Visit) => {
-      setVisits([...visits, data]);
-    });
+  const createVisit = async (values: Omit<Visit, "id">) => {
+    const data = await api.post<Visit>("visits", values);
+    setVisits([...visits, data]);
   };
 
   const retrieveVisit = useCallback(
-    (id: number) => {
-      return api.get(`visits/${id}`).then((data: Visit) => {
-        setVisits([...visits, data]);
-      });
+    async (id: number) => {
+      const data = await api.get<Visit>(`visits/${id}`);
+      setVisits([...visits, data]);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [setVisits]
   );
 
-  const updateVisit = (id: number, values: Partial<Visit>) => {
-    return api.patch(`visits/${id}`, values).then((data: Visit) => {
-      setVisits(visits.map((v) => (v.id === id ? data : v)));
-    });
+  const updateVisit = async (id: number, values: Partial<Visit>) => {
+    const data = await api.patch<Visit>(`visits/${id}`, values);
+    setVisits(visits.map((v) => (v.id === id ? data : v)));
   };
 
-  const deleteVisit = (id: number) => {
+  const deleteVisit = async (id: number) => {
     setVisits(visits.filter((v) => v.id !== id));
-    return api.del(`visits/${id}`).catch((err) => {
+    try {
+      await api.del(`visits/${id}`);
+    } catch (err) {
       setVisits(visits);
       throw err;
-    });
+    }
   };
 
   return {
