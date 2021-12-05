@@ -28,7 +28,7 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 
 ### Processing response
 
-```
+```javascript
 fetch(...)
 .then(response => response.json())
 .then(data => doSomething(data))
@@ -42,7 +42,7 @@ useCallback https://reactjs.org/docs/hooks-reference.html#usecallback
 
 ### Loading initial data
 
-```
+```javascript
 useEffect(() => {
   loadData()
 }, [loadData])
@@ -59,11 +59,11 @@ const loadData = useCallback(() => {
 - Set loading state to false after processing response
 
 ### Error handling
-```
+```javascript
 fetch(...)
     .then(resp => resp.ok ?
         resp.json() :
-        Promise.reject(“Error”)
+        Promise.reject(error)
     )
     .then(data => doSomethingWithData(data))
     .catch(err => doSomethingWithError(err))
@@ -77,7 +77,7 @@ fetch(...)
 
 ### Promise chaining vs async / await
 
-```
+```javascript
 funcA()
  .then(processData)
    .catch(processError)
