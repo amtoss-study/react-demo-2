@@ -1,10 +1,16 @@
-import { createContext, useState, FunctionComponent } from "react";
+import {
+  createContext,
+  useState,
+  FunctionComponent,
+  Dispatch,
+  SetStateAction,
+} from "react";
 
 import { Visit } from "types";
 
 type VisitsContextType = {
   visits: Visit[];
-  setVisits: (visits: Visit[]) => void;
+  setVisits: Dispatch<SetStateAction<Visit[]>>;
 };
 
 export const VisitsContext = createContext<VisitsContextType>({
