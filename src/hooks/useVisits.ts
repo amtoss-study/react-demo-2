@@ -26,7 +26,18 @@ const useVisits = () => {
   const retrieveVisit = useCallback(
     async (id: number) => {
       const data = await api.get<Visit>(`visits/${id}`);
-      setVisits((prevVisits) => [...prevVisits, data]);
+      setVisits((prevVisits) => {
+        const index = prevVisits.findIndex((v: Visit) => v.id === id);
+        if (index > -1) {
+          // replace item at index
+          return [
+            ...prevVisits.slice(0, index),
+            data,
+            ...prevVisits.slice(index + 1),
+          ];
+        }
+        return [...prevVisits, data];
+      });
     },
     [setVisits]
   );
