@@ -1,11 +1,14 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
 import { Visit } from "types";
 import VisitsList from "components/VisitsList";
 import NameForm, { Values as NameFormValues } from "components/NameForm";
-import useVisits from "hooks/useVisits";
 import Spinner from "components/Spinner";
+
+import useVisitsList from "./useVisitsList";
+import useVisitCreate from "./useVisitCreate";
+import useVisitDelete from "./useVisitDelete";
 
 const createVisitFromValues = (values: NameFormValues): Omit<Visit, "id"> => {
   return {
@@ -15,58 +18,44 @@ const createVisitFromValues = (values: NameFormValues): Omit<Visit, "id"> => {
 };
 
 const List = () => {
-  const { visits, retrieveVisits, createVisit, deleteVisit } = useVisits();
   const match = useRouteMatch();
 
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<null | string>(null);
-
-  const fetchVisits = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      await retrieveVisits();
-    } catch (err) {
-      setError(`Error while loading visits: ${err}`);
-    } finally {
-      setLoading(false);
-    }
-  }, [retrieveVisits]);
-
-  React.useEffect(() => {
-    fetchVisits();
-  }, [fetchVisits]);
-
-  const removeVisit = async (id: number) => {
-    try {
-      await deleteVisit(id);
-    } catch (err) {
-      setError(`Error while deleting visit: ${err}`);
-    }
-  };
+  const { visits, loading, error: fetchError } = useVisitsList();
+  const {
+    onCreate,
+    loading: createLoading,
+    error: createError,
+  } = useVisitCreate();
+  const { onDelete, error: deleteError } = useVisitDelete();
 
   return (
     <div>
       <NameForm
         onSubmit={async (values) => {
-          setLoading(true);
-          setError(null);
-          try {
-            await createVisit(createVisitFromValues(values));
-          } catch (err) {
-            setError(`Error while creating visit: ${err}`);
-          } finally {
-            setLoading(false);
-          }
+          onCreate(createVisitFromValues(values));
         }}
       />
       <VisitsList
         visits={visits}
-        removeVisit={removeVisit}
+        removeVisit={onDelete}
         getVisitUrl={(id) => `${match.url}/${id}`}
       />
-      {loading && <Spinner />}
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {(loading || createLoading) && <Spinner />}
+      {fetchError && (
+        <div style={{ color: "red" }}>
+          Error while loading visits: {`${fetchError}`}
+        </div>
+      )}
+      {createError && (
+        <div style={{ color: "red" }}>
+          Error while creating visit: {`${createError}`}
+        </div>
+      )}
+      {deleteError && (
+        <div style={{ color: "red" }}>
+          Error while deleting visit: {`${deleteError}`}
+        </div>
+      )}
     </div>
   );
 };
