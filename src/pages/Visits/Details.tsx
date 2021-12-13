@@ -5,7 +5,7 @@ import VisitDetails from "components/VisitDetails";
 import NameForm from "components/NameForm";
 import Spinner from "components/Spinner";
 import useVisitDetails from "./useVisitDetails";
-import useVisitEdit from "pages/Visits/useVisitEdit";
+import useVisitEdit from "./useVisitEdit";
 
 const Details = () => {
   const { visitId } = useParams<{ visitId: string }>();
