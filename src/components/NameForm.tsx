@@ -35,11 +35,11 @@ const NameForm = ({
       }}
       validationSchema={schema}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, submitCount }) => (
         <Form autoComplete="off">
           <h3>What is your name?</h3>
           <Field name="name" />
-          <ErrorMessage name="name" />
+          {submitCount > 0 && <ErrorMessage name="name" />}
           <button type="submit" disabled={isSubmitting}>
             Submit
           </button>
