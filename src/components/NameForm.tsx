@@ -1,8 +1,17 @@
 import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as yup from "yup";
 
 export type Values = {
   name: string;
 };
+
+const schema = yup.object().shape({
+  name: yup
+    .string()
+    .required("Please enter a name")
+    .min(2, "Please enter at least 2 characters"),
+});
 
 const NameForm = ({
   onSubmit,
@@ -11,31 +20,32 @@ const NameForm = ({
   onSubmit: (values: Values) => Promise<void>;
   initialValues?: Values;
 }) => {
-  const [values, setValues] = React.useState(initialValues);
-  const [submitting, setSubmitting] = React.useState(false);
   return (
-    <form
-      autoComplete="off"
-      onSubmit={async (event) => {
-        event.preventDefault();
-        setSubmitting(true);
-        await onSubmit(values);
-        setSubmitting(false);
-        setValues({ name: "" });
+    <Formik
+      initialValues={initialValues}
+      onSubmit={async (values, { setSubmitting, setFieldError, resetForm }) => {
+        try {
+          await onSubmit(values);
+          resetForm();
+        } catch (err) {
+          setFieldError("name", `Error while submitting the form: ${err}`);
+        } finally {
+          setSubmitting(false);
+        }
       }}
+      validationSchema={schema}
     >
-      <h3>What is your name?</h3>
-      <input
-        name="name"
-        value={values.name}
-        onChange={(event) => {
-          setValues({ name: event.target.value });
-        }}
-      />
-      <button type="submit" disabled={submitting}>
-        Submit
-      </button>
-    </form>
+      {({ isSubmitting }) => (
+        <Form autoComplete="off">
+          <h3>What is your name?</h3>
+          <Field name="name" />
+          <ErrorMessage name="name" />
+          <button type="submit" disabled={isSubmitting}>
+            Submit
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

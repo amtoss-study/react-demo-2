@@ -21,18 +21,14 @@ const List = () => {
   const match = useRouteMatch();
 
   const { visits, loading, error: fetchError } = useVisitsList();
-  const {
-    onCreate,
-    loading: createLoading,
-    error: createError,
-  } = useVisitCreate();
+  const { onCreate } = useVisitCreate();
   const { onDelete, error: deleteError } = useVisitDelete();
 
   return (
     <div>
       <NameForm
         onSubmit={async (values) => {
-          onCreate(createVisitFromValues(values));
+          await onCreate(createVisitFromValues(values));
         }}
       />
       <VisitsList
@@ -40,15 +36,10 @@ const List = () => {
         removeVisit={onDelete}
         getVisitUrl={(id) => `${match.url}/${id}`}
       />
-      {(loading || createLoading) && <Spinner />}
+      {loading && <Spinner />}
       {fetchError && (
         <div style={{ color: "red" }}>
           Error while loading visits: {`${fetchError}`}
-        </div>
-      )}
-      {createError && (
-        <div style={{ color: "red" }}>
-          Error while creating visit: {`${createError}`}
         </div>
       )}
       {deleteError && (
