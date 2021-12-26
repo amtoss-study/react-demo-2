@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Visit } from "types";
+import { Visit } from "entities/Visits/types";
 
 const VisitDetails = ({ name, timestamp }: Visit) => (
   <div>

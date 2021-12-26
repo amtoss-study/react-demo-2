@@ -1,5 +1,4 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 
 import VisitDetails from "components/VisitDetails";
 import NameForm from "components/NameForm";
@@ -8,11 +7,8 @@ import useVisitDetails from "./useVisitDetails";
 import useVisitEdit from "./useVisitEdit";
 
 const Details = () => {
-  const { visitId } = useParams<{ visitId: string }>();
-  const visitIdNum = parseInt(visitId, 10);
-
-  const { visit, loading, error: fetchingError } = useVisitDetails(visitIdNum);
-  const { edit, editing, onEdit, error: editError } = useVisitEdit(visitIdNum);
+  const { visit, loading, error: fetchingError } = useVisitDetails();
+  const { onEdit, edit, editing } = useVisitEdit();
 
   const visitExists = visit !== undefined;
 
@@ -34,16 +30,7 @@ const Details = () => {
       )}
 
       {loading && <Spinner />}
-      {fetchingError && (
-        <div style={{ color: "red" }}>
-          Error while fetching visit: {`${fetchingError}`}
-        </div>
-      )}
-      {editError && (
-        <div style={{ color: "red" }}>
-          Error while updating visit: {`${editError}`}
-        </div>
-      )}
+      {fetchingError && <div style={{ color: "red" }}>{fetchingError}</div>}
     </>
   );
 };

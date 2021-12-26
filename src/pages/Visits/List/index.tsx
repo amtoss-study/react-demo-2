@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 
-import { Visit } from "types";
+import { Visit } from "entities/Visits/types";
 import VisitsList from "components/VisitsList";
 import NameForm, { Values as NameFormValues } from "components/NameForm";
 import Spinner from "components/Spinner";
@@ -21,7 +21,7 @@ const List = () => {
   const match = useRouteMatch();
 
   const { visits, loading, error: fetchError } = useVisitsList();
-  const { onCreate } = useVisitCreate();
+  const onCreate = useVisitCreate();
   const { onDelete, error: deleteError } = useVisitDelete();
 
   return (
@@ -37,16 +37,8 @@ const List = () => {
         getVisitUrl={(id) => `${match.url}/${id}`}
       />
       {loading && <Spinner />}
-      {fetchError && (
-        <div style={{ color: "red" }}>
-          Error while loading visits: {`${fetchError}`}
-        </div>
-      )}
-      {deleteError && (
-        <div style={{ color: "red" }}>
-          Error while deleting visit: {`${deleteError}`}
-        </div>
-      )}
+      {fetchError && <div style={{ color: "red" }}>{fetchError}</div>}
+      {deleteError && <div style={{ color: "red" }}>{deleteError}</div>}
     </div>
   );
 };
